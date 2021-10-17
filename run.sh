@@ -37,7 +37,7 @@ date +"%T"
 echo "---------------------------------------<Run the program>------------------------------------"
 
 cd $SLURM_TMPDIR
-
+cd pytorch_resnet_cifar10
 
 for model in resnet20 resnet32 
 do
