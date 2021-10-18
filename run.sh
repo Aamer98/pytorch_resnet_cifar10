@@ -39,7 +39,7 @@ echo "---------------------------------------<Run the program>------------------
 cd $SLURM_TMPDIR
 cd pytorch_resnet_cifar10
 
-for model in resnet20 resnet32 
+for model in resnet20 
 do
     echo "python -u trainer.py  --arch=$model  --save-dir=save_$model |& tee -a log_$model"
     python -u trainer.py  --arch=$model  --save-dir=save_$model |& tee -a log_$model
@@ -47,4 +47,15 @@ done
 
 
 echo "---------------------------------------<End of program>-------------------------------------"
-date +"%T"
+
+date +"%T"\
+
+cd ..
+
+echo "----------------------------------<Copying files to Scratch>--------------------------------"
+
+date +"%T"\
+
+cp -r ./pytorch_resnet_cifar10 ~/scratch/pytorch_resnet_cifar10
+
+date +"%T"\
