@@ -58,6 +58,8 @@ parser.add_argument('--save-every', dest='save_every',
 best_prec1 = 0
 
 
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
 def main():
     global args, best_prec1
     args = parser.parse_args()
@@ -68,7 +70,7 @@ def main():
         os.makedirs(args.save_dir)
 
     model = torch.nn.DataParallel(resnet.__dict__[args.arch]())
-    model.cuda()
+    model..to(device)
 
     # optionally resume from a checkpoint
     if args.resume:
@@ -94,7 +96,7 @@ def main():
             transforms.RandomCrop(32, 4),
             transforms.ToTensor(),
             normalize,
-        ]), download=False),
+        ]), download=True),
         batch_size=args.batch_size, shuffle=True,
         num_workers=args.workers, pin_memory=True)
 
@@ -107,7 +109,7 @@ def main():
         num_workers=args.workers, pin_memory=True)
 
     # define loss function (criterion) and optimizer
-    criterion = nn.CrossEntropyLoss().cuda()
+    criterion = nn.CrossEntropyLoss().to(device)
 
     if args.half:
         model.half()
@@ -176,8 +178,8 @@ def train(train_loader, model, criterion, optimizer, epoch):
         # measure data loading time
         data_time.update(time.time() - end)
 
-        target = target.cuda()
-        input_var = input.cuda()
+        target = target.to(device)
+        input_var = input.to(device)
         target_var = target
         if args.half:
             input_var = input_var.half()
@@ -226,9 +228,9 @@ def validate(val_loader, model, criterion):
     end = time.time()
     with torch.no_grad():
         for i, (input, target) in enumerate(val_loader):
-            target = target.cuda()
-            input_var = input.cuda()
-            target_var = target.cuda()
+            target = target.to(device)
+            input_var = input.to(device)
+            target_var = target.to(device)
 
             if args.half:
                 input_var = input_var.half()
