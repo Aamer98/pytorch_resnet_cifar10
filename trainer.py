@@ -70,7 +70,7 @@ def main():
         os.makedirs(args.save_dir)
 
     model = torch.nn.DataParallel(resnet.__dict__[args.arch]())
-    model..to(device)
+    model.to(device)
 
     # optionally resume from a checkpoint
     if args.resume:
