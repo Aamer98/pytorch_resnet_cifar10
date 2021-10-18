@@ -23,8 +23,8 @@ train_loader = torch.utils.data.DataLoader(
         transforms.ToTensor(),
         normalize,
     ]), download=True),
-    batch_size=args.batch_size, shuffle=True,
-    num_workers=args.workers, pin_memory=True)
+    batch_size=128, shuffle=True,
+    num_workers=8, pin_memory=True)
 
 val_loader = torch.utils.data.DataLoader(
     datasets.CIFAR10(root='./data', train=False, transform=transforms.Compose([
@@ -32,4 +32,4 @@ val_loader = torch.utils.data.DataLoader(
         normalize,
     ])),
     batch_size=128, shuffle=False,
-    num_workers=args.workers, pin_memory=True)
+    num_workers=8, pin_memory=True)
