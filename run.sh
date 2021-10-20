@@ -56,6 +56,6 @@ echo "----------------------------------<Copying files to Scratch>--------------
 
 date +"%T"\
 
-cp -r ./pytorch_resnet_cifar10 ~/scratch/pytorch_resnet_cifar10
+cp -r ./pytorch_resnet_cifar10 ~/scratch/
 
 date +"%T"\
