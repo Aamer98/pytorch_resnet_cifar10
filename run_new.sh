@@ -45,13 +45,14 @@ done
 echo "---------------------------------------<End of program>-------------------------------------"
 
 date +"%T"\
+cd $SLURM_TMPDIR
 
-cd ..
 
-echo "----------------------------------<Copying files to Scratch>--------------------------------"
 
 date +"%T"\
-
-cp -r ./pytorch_resnet_cifar10 ~/scratch/pytorch_resnet_cifar10
+echo "----------------------------------<Copying files to root>--------------------------------"
+cp -r $SLURM_TMPDIR/pytorch_resnet_cifar10 ~
+echo "----------------------------------<Copying files to Scratch>--------------------------------"
+cp -r $SLURM_TMPDIR/pytorch_resnet_cifar10 ~/scratch/
 
 date +"%T"\
