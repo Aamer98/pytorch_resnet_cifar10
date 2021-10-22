@@ -73,6 +73,7 @@ def main():
     model = torch.nn.DataParallel(resnet.__dict__[args.arch]())
     model.to(device)
 
+
     # optionally resume from a checkpoint
     if args.resume:
         if os.path.isfile(args.resume):
@@ -97,7 +98,7 @@ def main():
             transforms.RandomCrop(32, 4),
             transforms.ToTensor(),
             normalize,
-        ]), download=True),
+        ]), download=False),
         batch_size=args.batch_size, shuffle=True,
         num_workers=args.workers, pin_memory=True)
 
@@ -108,7 +109,7 @@ def main():
         ])),
         batch_size=128, shuffle=False,
         num_workers=args.workers, pin_memory=True)
-
+    print("dataloader complete")
     # define loss function (criterion) and optimizer
     criterion = nn.CrossEntropyLoss().to(device)
 
@@ -134,20 +135,16 @@ def main():
         validate(val_loader, model, criterion)
         return
 
-    train_loss = []
-    train_acc = []
-    val_loss = []
-    val_acc = []
-    
+    print('commence training')    
     for epoch in range(args.start_epoch, args.epochs):
 
         # train for one epoch
         print('current lr {:.5e}'.format(optimizer.param_groups[0]['lr']))
         tr_acc, tr_loss = train(train_loader, model, criterion, optimizer, epoch)
-        
+        lr_scheduler.step()
         train_loss.append(tr_loss)
         train_acc.append(tr_acc)
-        lr_scheduler.step()
+        
 
         # evaluate on validation set
         prec1, vl_acc, vl_loss = validate(val_loader, model, criterion)
@@ -220,8 +217,8 @@ def train(train_loader, model, criterion, optimizer, epoch):
         top1.update(prec1.item(), input.size(0))
 
         
-        target = target.cpu()
-        output = output.cpu()
+        target = target.float()
+        output = output.float()
         total += output.size(0)
         correct += (output == target).sum().item()
 
@@ -285,8 +282,8 @@ def validate(val_loader, model, criterion):
             end = time.time()
 
 
-            target = target.cpu()
-            output = output.cpu()
+            target = target.float()
+            output = output.float()
             total += output.size(0)
             correct += (output == target).sum().item()
 
@@ -308,7 +305,8 @@ def validate(val_loader, model, criterion):
 
     return top1.avg, accu, fin_loss
 
-def save_checkpoint(state, is_best, filename='{}_checkpoint.pth.tar'.format(args.epochs)):
+
+def save_checkpoint(state, is_best, filename='checkpoint.pth.tar'):
     """
     Save the training model
     """
