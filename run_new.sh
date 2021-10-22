@@ -11,7 +11,7 @@
 #SBATCH --gres=gpu:1
 #SBATCH --ntasks-per-node=32
 #SBATCH --mem=127000M
-#SBATCH --time=0-06:00
+#SBATCH --time=0-00:10
 #SBATCH --account=rrg-ebrahimi
 
 
@@ -29,17 +29,6 @@ cp -r ~/scratch/pytorch_resnet_cifar10 .
 
 
 date +"%T"
-
-echo "---------------------------------------<Run the program>------------------------------------"
-
-cd $SLURM_TMPDIR
-cd pytorch_resnet_cifar10
-
-for model in resnet20 
-do
-    echo "python -u trainer_new.py  --arch=$model  --save-dir=save_$model |& tee -a log_$model"
-    python -u trainer_new.py  --arch=$model  --save-dir=save_$model |& tee -a log_$model
-done
 
 
 echo "---------------------------------------<End of program>-------------------------------------"
